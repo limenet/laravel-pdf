@@ -2,7 +2,7 @@
 
 namespace Limenet\LaravelPdf;
 
-use Limenet\LaravelPdf\Commands\LaravelPdfCommand;
+use Limenet\LaravelPdf\Commands\Cleanup;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -19,6 +19,7 @@ class LaravelPdfServiceProvider extends PackageServiceProvider
             ->name('laravel-pdf')
             ->hasConfigFile()
             ->hasViews()
-            ->hasCommand(LaravelPdfCommand::class);
+            ->hasCommand(Cleanup::class)
+            ->hasRoute('web');
     }
 }
