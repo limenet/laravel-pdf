@@ -3,10 +3,6 @@ const puppeteer = require("puppeteer");
 const fs = require("fs-extra");
 
 const args = process.argv.slice(2);
-const url = args[0];
-const headerHtmlFile = args[1];
-const footerHtmlFile = args[2];
-const pdfFile = args[3];
 
 process.on("unhandledRejection", (result, error) => {
     console.log(result);
@@ -24,24 +20,24 @@ let exitCode = 0;
             acceptInsecureCerts: true,
         });
         const page = await browser.newPage();
-        await page.goto(url, { waitUntil: "networkidle2" });
+        await page.goto(args[0], { waitUntil: "networkidle2" });
 
         await page.pdf({
-            path: pdfFile,
-            format: "A4",
+            path: args[3],
+            format: args[4],
             margin: {
-                top: "1 cm",
-                right: "1.5 cm",
-                bottom: "2.5 cm",
-                left: "1.5 cm",
+                top: args[6],
+                right: args[7],
+                bottom: args[8],
+                left: args[9],
             },
-            headerTemplate: fs.readFileSync(headerHtmlFile, "utf-8"),
-            footerTemplate: fs.readFileSync(footerHtmlFile, "utf-8"),
+            landscape: args[5] === "yes",
+            headerTemplate: fs.readFileSync(args[1], "utf-8"),
+            footerTemplate: fs.readFileSync(args[2], "utf-8"),
             displayHeaderFooter: true,
         });
 
         await browser.close();
-        process.stdout.write(`${pdfFile}`);
     } catch (e) {
         console.log(e);
         exitCode = 1;

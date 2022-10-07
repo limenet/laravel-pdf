@@ -34,6 +34,12 @@ class Pdf
         private readonly ?string $footerView = null,
         private readonly array $footerData = [],
         private readonly ?int $cacheSeconds = null,
+        private readonly string $format = 'A4',
+        private readonly bool $landscape = false,
+        private readonly string $marginTop = '1cm',
+        private readonly string $marginRight = '1.5cm',
+        private readonly string $marginBottom = '2.5cm',
+        private readonly string $marginLeft = '1.5cm',
     ) {
         $this->filename = $this->filename ?: $this->view->getData()['title'] ?? Str::uuid();
         $this->cacheKey = sprintf('PDF_%s_%s_%s', $this->view->getName(), $this->filename, $this->extraKey);
@@ -83,6 +89,12 @@ class Pdf
                 self::getDisk()->path($this->snippet($this->headerView, $this->headerData)),
                 self::getDisk()->path($this->snippet($this->footerView, $this->footerData)),
                 $output,
+                $this->format,
+                $this->landscape ? 'yes' : 'no',
+                $this->marginTop,
+                $this->marginRight,
+                $this->marginBottom,
+                $this->marginLeft,
             ]);
 
             $process->setWorkingDirectory(base_path());
