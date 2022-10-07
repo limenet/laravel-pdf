@@ -21,6 +21,13 @@ Please also install the Node dependencies:
 npm i puppeteer fs-extra
 ```
 
+And set up a scheduled task:
+
+```php
+// app/Console/Kernel.php
+$schedule->command(\Limenet\LaravelPdf\Commands\Cleanup::class)->hourly();
+```
+
 You can publish the config file with:
 
 ```bash
