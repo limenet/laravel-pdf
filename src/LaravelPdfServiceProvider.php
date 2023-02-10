@@ -3,6 +3,7 @@
 namespace Limenet\LaravelPdf;
 
 use Limenet\LaravelPdf\Commands\Cleanup;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -20,6 +21,7 @@ class LaravelPdfServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasCommand(Cleanup::class)
-            ->hasRoute('web');
+            ->hasRoute('web')
+            ->hasInstallCommand(fn (InstallCommand $command) => $command->publishConfigFile());
     }
 }
