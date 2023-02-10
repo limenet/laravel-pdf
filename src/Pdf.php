@@ -7,6 +7,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Response;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -71,12 +72,17 @@ class Pdf
 
     protected function generate(): string
     {
+        $strategy = match (config('pdf.strategy')) {
+            'browserless' => $this->makeFreshBrowserless(...),
+            default => $this->makeFreshLocal(...)
+        };
+
         return $this->isCached() && $this->getFile() !== null
             ? $this->getFile()
-            : retry(2, fn (): string => $this->makeFresh(), 500);
+            : retry(2, fn (): string => $strategy(), 500);
     }
 
-    protected function makeFresh(): string
+    protected function makeFreshLocal(): string
     {
         $main = $this->htmlToDisk($this->view->render());
         $output = self::getDisk()->path($main.'_pdf');
@@ -126,6 +132,47 @@ class Pdf
             report($th);
             throw new Exception('Failed to generate PDF', 0, $th);
         }
+    }
+
+    protected function makeFreshBrowserless(): string
+    {
+        $rendered = $this->view->render();
+        $main = $this->htmlToDisk($rendered);
+
+        $payload = [
+            'options' => [
+                'format' => $this->format,
+                'landscape' => $this->landscape,
+                'headerTemplate' => self::getDisk()->path($this->snippet($this->headerView, $this->headerData)),
+                'footerTemplate' => self::getDisk()->path($this->snippet($this->footerView, $this->footerData)),
+                'margin' => [
+                    'top' => $this->marginTop,
+                    'right' => $this->marginRight,
+                    'bottom' => $this->marginBottom,
+                    'left' => $this->marginLeft,
+                ],
+            ],
+        ];
+
+        if (app()->environment('local')) {
+            $payload['html'] = $rendered;
+        } else {
+            $payload['url'] = URL::temporarySignedRoute('pdf', now()->addHour(), ['key' => $main]);
+        }
+
+        $url = sprintf('https://chrome.browserless.io/pdf?token=%s', config('pdf.browserless.token'));
+
+        $request = Http::post($url, $payload);
+
+        if ($request->toException() !== null) {
+            $th = $request->toException();
+            report($th);
+            throw new Exception('Failed to generate PDF', 0, $th);
+        }
+
+        $this->cachePdf($request->body());
+
+        return $request->body();
     }
 
     /**
