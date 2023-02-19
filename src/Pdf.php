@@ -137,6 +137,23 @@ class Pdf
     protected function makeFreshBrowserless(): string
     {
         $rendered = $this->view->render();
+
+        if (config('pdf.browserless.inline_css')) {
+            $rendered = $this->inlineAssets(
+                $rendered,
+                '/(<link href="([\S]+)" rel="stylesheet">)/m',
+                '<style>%s</style>'
+            );
+        }
+
+        if (config('pdf.browserless.inline_js')) {
+            $rendered = $this->inlineAssets(
+                $rendered,
+                '/(<script src="([\S]+)")><\/script>/m',
+                '<script>%s</script>'
+            );
+        }
+
         $main = $this->htmlToDisk($rendered);
 
         $payload = [
@@ -236,5 +253,23 @@ class Pdf
     protected function getFile(): ?string
     {
         return Cache::store('file')->get($this->cacheKey);
+    }
+
+    protected function inlineAssets(string $html, string $searchPattern, string $replacePattern): string
+    {
+        return preg_replace_callback(
+            $searchPattern,
+            function ($matches) use ($replacePattern): string {
+                [$complete,,$url] = $matches;
+                ['path' => $path] = parse_url($url);
+                $filepath = public_path($path);
+                if (! file_exists($filepath)) {
+                    return $complete;
+                }
+
+                return sprintf($replacePattern, file_get_contents($filepath));
+            },
+            $html
+        ) ?: $html;
     }
 }

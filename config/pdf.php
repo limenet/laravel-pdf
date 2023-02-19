@@ -5,5 +5,7 @@ return [
     'strategy' => 'local',
     'browserless' => [
         'token' => null,
+        'inline_css' => false,
+        'inline_js' => false,
     ],
 ];
