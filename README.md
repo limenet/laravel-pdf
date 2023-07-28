@@ -1,8 +1,9 @@
 # Generate PDFs in Laravel with Puppeteer
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/limenet/laravel-pdf.svg?style=flat-square)](https://packagist.org/packages/limenet/laravel-pdf)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/limenet/laravel-pdf/run-tests?label=tests)](https://github.com/limenet/laravel-pdf/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/limenet/laravel-pdf/Fix%20PHP%20code%20style%20issues?label=code%20style)](https://github.com/limenet/laravel-pdf/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![GitHub Tests Action Status](https://github.com/limenet/laravel-pdf/actions/workflows/run-tests.yml/badge.svg)](https://github.com/limenet/laravel-pdf/actions/workflows/run-tests.yml)
+[![Fix PHP code style issues](https://github.com/limenet/laravel-pdf/actions/workflows/fix-php-code-style-issues.yml/badge.svg)](https://github.com/limenet/laravel-pdf/actions/workflows/fix-php-code-style-issues.yml)
+[![PHPStan](https://github.com/limenet/laravel-pdf/actions/workflows/phpstan.yml/badge.svg)](https://github.com/limenet/laravel-pdf/actions/workflows/phpstan.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/limenet/laravel-pdf.svg?style=flat-square)](https://packagist.org/packages/limenet/laravel-pdf)
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
