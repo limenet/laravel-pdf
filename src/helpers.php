@@ -22,9 +22,14 @@ if (! function_exists('asset_inline')) {
             throw new RuntimeException(sprintf('Failed to inline asset: %s', $path));
         }
 
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+
         return sprintf(
             'data:image/%s;base64,%s',
-            pathinfo($path, PATHINFO_EXTENSION),
+            match ($extension) {
+                'svg' => 'svg+xml',
+                default => $extension
+            },
             base64_encode($contents)
         );
     }
