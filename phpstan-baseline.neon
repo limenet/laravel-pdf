@@ -1,6 +1,0 @@
-parameters:
-	ignoreErrors:
-		-
-			message: "#^Cannot use array destructuring on array\\<string, int\\|string\\>\\|false\\.$#"
-			count: 1
-			path: src/Pdf.php

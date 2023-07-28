@@ -42,6 +42,10 @@ class Pdf
         private readonly string $marginBottom = '2.5cm',
         private readonly string $marginLeft = '1.5cm',
     ) {
+        if (config('pdf.browserless.inline_assets')) {
+            ViteInline::$isEnabled = true;
+        }
+
         $this->filename = $this->filename ?: $this->view->getData()['title'] ?? Str::uuid();
         $this->cacheKey = sprintf('PDF_%s_%s_%s', $this->view->getName(), $this->filename, $this->extraKey);
     }
@@ -137,22 +141,6 @@ class Pdf
     protected function makeFreshBrowserless(): string
     {
         $rendered = $this->view->render();
-
-        if (config('pdf.browserless.inline_css')) {
-            $rendered = $this->inlineAssets(
-                $rendered,
-                '/(<link href="([\S]+)" rel="stylesheet">)/m',
-                '<style>%s</style>'
-            );
-        }
-
-        if (config('pdf.browserless.inline_js')) {
-            $rendered = $this->inlineAssets(
-                $rendered,
-                '/(<script src="([\S]+)")><\/script>/m',
-                '<script>%s</script>'
-            );
-        }
 
         $main = $this->htmlToDisk($rendered);
 
@@ -253,23 +241,5 @@ class Pdf
     protected function getFile(): ?string
     {
         return Cache::store('file')->get($this->cacheKey);
-    }
-
-    protected function inlineAssets(string $html, string $searchPattern, string $replacePattern): string
-    {
-        return preg_replace_callback(
-            $searchPattern,
-            function ($matches) use ($replacePattern): string {
-                [$complete,,$url] = $matches;
-                ['path' => $path] = parse_url($url);
-                $filepath = public_path($path);
-                if (! file_exists($filepath)) {
-                    return $complete;
-                }
-
-                return sprintf($replacePattern, file_get_contents($filepath));
-            },
-            $html
-        ) ?: $html;
     }
 }
