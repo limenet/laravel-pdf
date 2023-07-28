@@ -19,7 +19,7 @@ if (! function_exists('asset_inline')) {
         $contents = file_get_contents($path);
 
         if ($contents === false) {
-            throw new RuntimeException(sprintf('Faield to inline asset: %s', $path));
+            throw new RuntimeException(sprintf('Failed to inline asset: %s', $path));
         }
 
         return sprintf(
