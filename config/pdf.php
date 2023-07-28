@@ -5,6 +5,6 @@ return [
     'strategy' => 'local',
     'browserless' => [
         'token' => null,
-        'inline_assets' => false,
     ],
+    'inline_assets' => false,
 ];

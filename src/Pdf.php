@@ -42,7 +42,7 @@ class Pdf
         private readonly string $marginBottom = '2.5cm',
         private readonly string $marginLeft = '1.5cm',
     ) {
-        if (config('pdf.browserless.inline_assets')) {
+        if (config('pdf.inline_assets')) {
             ViteInline::$isEnabled = true;
         }
 
