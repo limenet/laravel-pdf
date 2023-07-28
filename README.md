@@ -15,12 +15,6 @@ You can install the package via composer:
 composer require limenet/laravel-pdf
 ```
 
-Please also install the Node dependencies:
-
-```bash
-npm i puppeteer fs-extra
-```
-
 And set up a scheduled task:
 
 ```php
@@ -33,6 +27,15 @@ You can publish the config file with:
 ```bash
 php artisan vendor:publish --tag="laravel-pdf-config"
 ```
+
+Choose a strategy:
+1. Puppeteer. Please also install the Node dependencies:
+    ```bash
+    npm i puppeteer fs-extra
+    ```
+2. Browserless.io
+
+For local development, you may want to use the `browserless` strategy with `inline_assets` set to `true`.
 
 ## Usage
 
