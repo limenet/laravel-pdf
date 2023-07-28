@@ -42,6 +42,10 @@ class Pdf
         private readonly string $marginBottom = '2.5cm',
         private readonly string $marginLeft = '1.5cm',
     ) {
+        if (config('pdf.browserless.inline_assets')) {
+            ViteInline::$isEnabled = true;
+        }
+
         $this->filename = $this->filename ?: $this->view->getData()['title'] ?? Str::uuid();
         $this->cacheKey = sprintf('PDF_%s_%s_%s', $this->view->getName(), $this->filename, $this->extraKey);
     }
@@ -137,6 +141,7 @@ class Pdf
     protected function makeFreshBrowserless(): string
     {
         $rendered = $this->view->render();
+
         $main = $this->htmlToDisk($rendered);
 
         $payload = [

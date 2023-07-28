@@ -2,6 +2,9 @@
 
 namespace Limenet\LaravelPdf;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Foundation\Vite;
+use Illuminate\Support\Facades\App;
 use Limenet\LaravelPdf\Commands\Cleanup;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -23,5 +26,14 @@ class LaravelPdfServiceProvider extends PackageServiceProvider
             ->hasCommand(Cleanup::class)
             ->hasRoute('web')
             ->hasInstallCommand(fn (InstallCommand $command) => $command->publishConfigFile());
+    }
+
+    public function packageRegistered(): void
+    {
+        if (config('pdf.browserless.inline_assets')) {
+            App::bind(Vite::class, function (Application $app) {
+                return new ViteInline();
+            });
+        }
     }
 }
