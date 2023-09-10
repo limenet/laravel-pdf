@@ -58,6 +58,11 @@ class Pdf
         );
     }
 
+    final public static function getDisk(): FilesystemAdapter
+    {
+        return Storage::disk('local');
+    }
+
     public function response(): Response
     {
         return response(
@@ -70,11 +75,6 @@ class Pdf
                     : null,
             ])
         );
-    }
-
-    final public static function getDisk(): FilesystemAdapter
-    {
-        return Storage::disk('local');
     }
 
     public function file(): string

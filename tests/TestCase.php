@@ -7,6 +7,10 @@ use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
+    public function getEnvironmentSetUp($app): void
+    {
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -17,9 +21,5 @@ class TestCase extends Orchestra
         return [
             LaravelPdfServiceProvider::class,
         ];
-    }
-
-    public function getEnvironmentSetUp($app)
-    {
     }
 }
