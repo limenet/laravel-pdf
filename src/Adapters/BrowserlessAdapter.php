@@ -20,8 +20,8 @@ class BrowserlessAdapter implements AdapterInterface
             'options' => [
                 'format' => $pdfConfig->format,
                 'landscape' => $pdfConfig->landscape,
-                'headerTemplate' => Pdf::getDisk()->path($headerViewRendered),
-                'footerTemplate' => Pdf::getDisk()->path($footerViewRendered),
+                'headerTemplate' => Pdf::getDisk()->get($headerViewRendered),
+                'footerTemplate' => Pdf::getDisk()->get($footerViewRendered),
                 'margin' => [
                     'top' => $pdfConfig->marginTop,
                     'right' => $pdfConfig->marginRight,
@@ -42,8 +42,6 @@ class BrowserlessAdapter implements AdapterInterface
             $payload['options']['footerTemplate'] = Pdf::getDisk()->get($footerViewRendered);
         } else {
             $payload['url'] = URL::temporarySignedRoute('pdf', now()->addHour(), ['key' => $viewRendered]);
-            $payload['options']['headerTemplate'] = URL::temporarySignedRoute('pdf', now()->addHour(), ['key' => $headerViewRendered]);
-            $payload['options']['footerTemplate'] = URL::temporarySignedRoute('pdf', now()->addHour(), ['key' => $footerViewRendered]);
         }
 
         $url = sprintf('https://chrome.browserless.io/pdf?token=%s', config('pdf.browserless.token'));
