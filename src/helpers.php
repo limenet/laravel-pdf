@@ -28,7 +28,7 @@ if (! function_exists('asset_inline')) {
             'data:image/%s;base64,%s',
             match ($extension) {
                 'svg' => 'svg+xml',
-                default => $extension
+                default => $extension,
             },
             base64_encode($contents)
         );
