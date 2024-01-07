@@ -37,6 +37,15 @@ class ViteInline extends Vite
         );
     }
 
+    protected function makePreloadTagForChunk($src, $url, $chunk, $manifest)
+    {
+        if (! self::$isEnabled) {
+            return parent::makeStylesheetTagWithAttributes(...func_get_args());
+        }
+
+        return '';
+    }
+
     private function absolutePath(string $url): string
     {
         return str($url)
