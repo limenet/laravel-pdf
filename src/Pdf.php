@@ -28,7 +28,7 @@ class Pdf
     public function __construct(
         private readonly View $view,
         private ?string $filename = null,
-        string $extraKey = null,
+        ?string $extraKey = null,
         private readonly ?string $headerView = null,
         private readonly array $headerData = [],
         private readonly ?string $footerView = null,
