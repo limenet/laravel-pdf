@@ -11,6 +11,5 @@ class PdfConfig
         public readonly string $marginRight,
         public readonly string $marginBottom,
         public readonly string $marginLeft,
-    ) {
-    }
+    ) {}
 }

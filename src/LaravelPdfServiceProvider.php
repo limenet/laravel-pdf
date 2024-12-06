@@ -31,7 +31,7 @@ class LaravelPdfServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         if (config('pdf.inline_assets')) {
-            App::bind(Vite::class, fn (Application $app) => new ViteInline());
+            App::bind(Vite::class, fn (Application $app) => new ViteInline);
         }
     }
 }

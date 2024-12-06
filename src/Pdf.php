@@ -79,7 +79,7 @@ class Pdf
 
     public function file(): string
     {
-        return $this->generate() ?: throw new RuntimeException();
+        return $this->generate() ?: throw new RuntimeException;
     }
 
     private function generate(): string
@@ -164,6 +164,6 @@ class Pdf
     {
         preg_match("/<body[^>]*>(.*?)<\/body>/is", $html, $matches);
 
-        return $matches[1];
+        return $matches[1] ?? '';
     }
 }
