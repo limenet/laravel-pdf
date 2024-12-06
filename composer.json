@@ -24,13 +24,13 @@
         "laravel/pint": "^1.18.3",
         "larastan/larastan": "^3.0.2",
         "nunomaduro/collision": "^7.10.0 || ^8.5.0",
-        "orchestra/testbench": "^8.22.0 || ^9.6.1",
-        "pestphp/pest": "^2.36.0",
-        "pestphp/pest-plugin-laravel": "^2.4",
+        "orchestra/testbench": "^8.22.0 || ^9.7.0",
+        "pestphp/pest": "^3.6",
+        "pestphp/pest-plugin-laravel": "^3",
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan-deprecation-rules": "^2.0.1",
         "phpstan/phpstan-phpunit": "^2.0.1",
-        "phpunit/phpunit": "^10.5.36"
+        "phpunit/phpunit": "^11.4.4"
     },
     "autoload": {
         "psr-4": {
