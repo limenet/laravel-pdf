@@ -16,7 +16,8 @@ if (! function_exists('asset_inline')) {
             return asset(...func_get_args());
         }
 
-        $contents = file_get_contents($path);
+        $fixedPath = file_exists($path) ? $path : public_path($path);
+        $contents = file_get_contents($fixedPath);
 
         if ($contents === false) {
             throw new RuntimeException(sprintf('Failed to inline asset: %s', $path));
