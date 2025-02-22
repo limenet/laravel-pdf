@@ -17,9 +17,9 @@ use voku\helper\ASCII;
 
 class Pdf
 {
-    private string $cacheKey;
+    private readonly string $cacheKey;
 
-    private PdfConfig $pdfConfig;
+    private readonly PdfConfig $pdfConfig;
 
     /**
      * @param  view-string|null  $headerView
