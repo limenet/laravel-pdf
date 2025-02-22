@@ -52,6 +52,7 @@
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
         "format": "vendor/bin/pint",
+        "rector": "vendor/bin/rector",
         "post-update-cmd": [
             "@composer bump -D"
         ]
