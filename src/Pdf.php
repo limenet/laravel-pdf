@@ -68,12 +68,17 @@ class Pdf
         return response(
             $this->generate(),
             200,
-            array_filter([
+            [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => $this->filename !== null
-                    ? sprintf('inline; filename="%s.pdf"', ASCII::to_filename($this->filename))
-                    : null,
-            ])
+                'Expires' => 0,
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                ...array_filter([
+                    'Content-Disposition' => $this->filename !== null
+                        ? sprintf('inline; filename="%s.pdf"', ASCII::to_filename($this->filename))
+                        : null,
+                ]),
+            ]
         );
     }
 
