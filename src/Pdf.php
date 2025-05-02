@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Limenet\LaravelPdf\Adapters\BrowserlessAdapter;
 use Limenet\LaravelPdf\Adapters\PuppeteerAdapter;
+use Limenet\LaravelPdf\Adapters\ScreenlyAdapter;
 use Limenet\LaravelPdf\DTO\PdfConfig;
 use RuntimeException;
 use voku\helper\ASCII;
@@ -91,6 +92,7 @@ class Pdf
     {
         $strategy = match (config('pdf.strategy')) {
             'browserless' => app(BrowserlessAdapter::class)->make(...),
+            'screenly' => app(ScreenlyAdapter::class)->make(...),
             default => app(PuppeteerAdapter::class)->make(...),
         };
 
