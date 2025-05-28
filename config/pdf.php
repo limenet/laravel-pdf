@@ -2,12 +2,12 @@
 
 return [
     // "local", "browserless", "screenly"
-    'strategy' => 'local',
+    'strategy' => env('PDF_STRATEGY', 'local'),
     'browserless' => [
-        'token' => null,
+        'token' => env('BROWSERLESS_TOKEN'),
     ],
     'screenly' => [
-        'token' => null,
+        'token' => env('SCREENLY_TOKEN'),
     ],
     'inline_assets' => false,
 ];
