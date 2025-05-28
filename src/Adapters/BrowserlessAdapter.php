@@ -44,7 +44,11 @@ class BrowserlessAdapter implements AdapterInterface
             $payload['url'] = URL::temporarySignedRoute('pdf', now()->addHour(), ['key' => $viewRendered]);
         }
 
-        $url = sprintf('https://chrome.browserless.io/pdf?token=%s', config('pdf.browserless.token'));
+        $url = sprintf(
+            'https://%s.browserless.io/pdf?token=%s',
+            config('pdf.browserless.endpoint', 'chrome'),
+            config('pdf.browserless.token')
+        );
 
         $request = Http::post($url, $payload);
 
