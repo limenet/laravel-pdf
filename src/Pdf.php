@@ -90,20 +90,26 @@ class Pdf
 
     private function generate(): string
     {
+        // Check if we have a cached version first
+        if ($this->isCached()) {
+            $cachedFile = $this->getFile();
+            if ($cachedFile !== null) {
+                return $cachedFile;
+            }
+        }
+
         $strategy = match (config('pdf.strategy')) {
             'browserless' => app(BrowserlessAdapter::class)->make(...),
             'screenly' => app(ScreenlyAdapter::class)->make(...),
             default => app(PuppeteerAdapter::class)->make(...),
         };
 
-        $generated = $this->isCached() && $this->getFile() !== null
-            ? $this->getFile()
-            : retry(2, fn (): string => $strategy(
-                $this->pdfConfig,
-                $this->htmlToDisk($this->view->render()),
-                $this->htmlToDisk($this->snippet($this->headerView, $this->headerData)),
-                $this->htmlToDisk($this->snippet($this->footerView, $this->footerData)),
-            ), 500);
+        $generated = retry(2, fn (): string => $strategy(
+            $this->pdfConfig,
+            $this->htmlToDisk($this->view->render()),
+            $this->htmlToDisk($this->snippet($this->headerView, $this->headerData)),
+            $this->htmlToDisk($this->snippet($this->footerView, $this->footerData)),
+        ), 500);
 
         $this->cachePdf($generated);
 
@@ -161,8 +167,19 @@ class Pdf
             return '<span></span>';
         }
 
-        $rendered = app(Markdown::class)->render($name, $data)->toHtml();
-        $body = $this->extractBody($rendered);
+        $rendered = app(Markdown::class)->render($name, $data);
+
+        // Get HTML content, handling both method and property cases
+        $html = '';
+        if (method_exists($rendered, 'toHtml')) {
+            $html = $rendered->toHtml();
+        } elseif (is_object($rendered) && property_exists($rendered, 'toHtml') && is_callable($rendered->toHtml)) {
+            $html = ($rendered->toHtml)();
+        } else {
+            $html = (string) $rendered;
+        }
+
+        $body = $this->extractBody($html);
 
         return $body;
     }
