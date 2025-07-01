@@ -12,4 +12,6 @@ interface AdapterInterface
         string $headerViewRendered,
         string $footerViewRendered,
     ): string;
+
+    public function configPrefix(): string;
 }
