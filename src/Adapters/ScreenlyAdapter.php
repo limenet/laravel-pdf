@@ -8,8 +8,15 @@ use Illuminate\Support\Facades\URL;
 use Limenet\LaravelPdf\DTO\PdfConfig;
 use Limenet\LaravelPdf\Pdf;
 
-class ScreenlyAdapter implements AdapterInterface
+class ScreenlyAdapter implements AdapterInterface, ConcurrencyLimiterInterface
 {
+    use ConcurrencyLimiterTrait;
+
+    public function configPrefix(): string
+    {
+        return config('pdf.screenly');
+    }
+
     public function make(
         PdfConfig $pdfConfig,
         string $viewRendered,
@@ -43,21 +50,23 @@ class ScreenlyAdapter implements AdapterInterface
             $payload['url'] = URL::temporarySignedRoute('pdf', now()->addHour(), ['key' => $viewRendered]);
         }
 
-        $request = Http::withToken(config('pdf.screenly.token'))
-            ->post('https://3.screeenly.com/api/v1/shots', $payload);
+        return $this->executeWithConcurrencyLimit(function () use ($payload) {
+            $request = Http::withToken(config($this->configPrefix().'.token'))
+                ->post('https://3.screeenly.com/api/v1/shots', $payload);
 
-        $url = $request->json('data.shot_url');
+            $url = $request->json('data.shot_url');
 
-        if ($request->toException() !== null || $url === null) {
-            $th = $request->toException();
+            if ($request->toException() !== null || $url === null) {
+                $th = $request->toException();
 
-            if ($th !== null) {
-                report($th);
+                if ($th !== null) {
+                    report($th);
+                }
+
+                throw new Exception('Failed to generate PDF', 0, $th);
             }
 
-            throw new Exception('Failed to generate PDF', 0, $th);
-        }
-
-        return Http::get($url)->body();
+            return Http::get($url)->body();
+        });
     }
 }

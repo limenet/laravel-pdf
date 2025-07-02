@@ -8,8 +8,15 @@ use Illuminate\Support\Facades\URL;
 use Limenet\LaravelPdf\DTO\PdfConfig;
 use Limenet\LaravelPdf\Pdf;
 
-class BrowserlessAdapter implements AdapterInterface
+class BrowserlessAdapter implements AdapterInterface, ConcurrencyLimiterInterface
 {
+    use ConcurrencyLimiterTrait;
+
+    public function configPrefix(): string
+    {
+        return config('pdf.browserless');
+    }
+
     public function make(
         PdfConfig $pdfConfig,
         string $viewRendered,
@@ -46,18 +53,20 @@ class BrowserlessAdapter implements AdapterInterface
 
         $url = sprintf(
             'https://%s.browserless.io/pdf?token=%s',
-            config('pdf.browserless.endpoint', 'chrome'),
-            config('pdf.browserless.token')
+            config($this->configPrefix().'.endpoint', 'chrome'),
+            config($this->configPrefix().'.token')
         );
 
-        $request = Http::post($url, $payload);
+        return $this->executeWithConcurrencyLimit(function () use ($payload, $url) {
+            $request = Http::post($url, $payload);
 
-        if ($request->toException() !== null) {
-            $th = $request->toException();
-            report($th);
-            throw new Exception('Failed to generate PDF', 0, $th);
-        }
+            if ($request->toException() !== null) {
+                $th = $request->toException();
+                report($th);
+                throw new Exception('Failed to generate PDF', 0, $th);
+            }
 
-        return $request->body();
+            return $request->body();
+        });
     }
 }
