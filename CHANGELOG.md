@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-pdf` will be documented in this file.
 
+## v1.8.0 - 2025-07-02
+
+- #27 limit concurrent PDF requests
+
 ## v1.2.1 - 2023-02-17
 
 - Laravel 10
