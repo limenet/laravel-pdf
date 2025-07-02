@@ -11,10 +11,11 @@ use Limenet\LaravelPdf\Pdf;
 class ScreenlyAdapter implements AdapterInterface, ConcurrencyLimiterInterface
 {
     use ConcurrencyLimiterTrait;
+    use ConfigTrait;
 
-    public function configPrefix(): string
+    public function configPath(): string
     {
-        return config('pdf.screenly');
+        return 'pdf.screenly';
     }
 
     public function make(
@@ -51,7 +52,7 @@ class ScreenlyAdapter implements AdapterInterface, ConcurrencyLimiterInterface
         }
 
         return $this->executeWithConcurrencyLimit(function () use ($payload) {
-            $request = Http::withToken(config($this->configPrefix().'.token'))
+            $request = Http::withToken($this->adapterConfig('token'))
                 ->post('https://3.screeenly.com/api/v1/shots', $payload);
 
             $url = $request->json('data.shot_url');

@@ -13,10 +13,11 @@ use Throwable;
 class PuppeteerAdapter implements AdapterInterface, ConcurrencyLimiterInterface
 {
     use ConcurrencyLimiterTrait;
+    use ConfigTrait;
 
-    public function configPrefix(): string
+    public function configPath(): string
     {
-        return config('pdf.puppeteer');
+        return 'pdf.puppeteer';
     }
 
     public function make(

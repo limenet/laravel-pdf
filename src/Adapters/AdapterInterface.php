@@ -13,5 +13,7 @@ interface AdapterInterface
         string $footerViewRendered,
     ): string;
 
-    public function configPrefix(): string;
+    public function adapterConfig(string $path, mixed $default = null): mixed;
+
+    public function configPath(): string;
 }

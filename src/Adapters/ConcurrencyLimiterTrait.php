@@ -9,7 +9,7 @@ trait ConcurrencyLimiterTrait
 {
     public function getConcurrencyLimit(): int
     {
-        return config($this->configPrefix().'.concurrency_limit', 3);
+        return $this->adapterConfig('concurrency_limit', 5);
     }
 
     /**

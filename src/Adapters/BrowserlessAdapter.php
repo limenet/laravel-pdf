@@ -11,10 +11,11 @@ use Limenet\LaravelPdf\Pdf;
 class BrowserlessAdapter implements AdapterInterface, ConcurrencyLimiterInterface
 {
     use ConcurrencyLimiterTrait;
+    use ConfigTrait;
 
-    public function configPrefix(): string
+    public function configPath(): string
     {
-        return config('pdf.browserless');
+        return 'pdf.browserless';
     }
 
     public function make(
@@ -53,8 +54,8 @@ class BrowserlessAdapter implements AdapterInterface, ConcurrencyLimiterInterfac
 
         $url = sprintf(
             'https://%s.browserless.io/pdf?token=%s',
-            config($this->configPrefix().'.endpoint', 'chrome'),
-            config($this->configPrefix().'.token')
+            $this->adapterConfig('endpoint', 'chrome'),
+            $this->adapterConfig('token')
         );
 
         return $this->executeWithConcurrencyLimit(function () use ($payload, $url) {
