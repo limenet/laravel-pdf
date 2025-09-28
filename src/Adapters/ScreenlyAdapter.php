@@ -24,7 +24,13 @@ class ScreenlyAdapter implements AdapterInterface, ConcurrencyLimiterInterface
         string $headerViewRendered,
         string $footerViewRendered,
     ): string {
-        $convertToMm = (fn (string $value): string => (string) ((str($value)->before('cm')->numbers()->toInteger()) * 10));
+        $convertToMm = fn (string $value): string => (string) (
+            str($value)
+                ->before('cm')
+                ->replaceMatches('/[^0-9\.]/', '')
+                ->toFloat() * 10
+        );
+
         $payload =
             [
                 'file_type' => 'pdf',
@@ -37,10 +43,10 @@ class ScreenlyAdapter implements AdapterInterface, ConcurrencyLimiterInterface
                 'wait_until_network_idle' => true,
                 'paper_format' => $pdfConfig->format,
                 'paper_orientation' => $pdfConfig->landscape ? 'landscape' : 'portrait',
-                'paper_margins_top' => $convertToMm(($pdfConfig->marginTop)),
-                'paper_margins_right' => $convertToMm(($pdfConfig->marginRight)),
-                'paper_margins_bottom' => $convertToMm(($pdfConfig->marginBottom)),
-                'paper_margins_left' => $convertToMm(($pdfConfig->marginLeft)),
+                'paper_margins_top' => $convertToMm($pdfConfig->marginTop),
+                'paper_margins_right' => $convertToMm($pdfConfig->marginRight),
+                'paper_margins_bottom' => $convertToMm($pdfConfig->marginBottom),
+                'paper_margins_left' => $convertToMm($pdfConfig->marginLeft),
                 'header_html' => Pdf::getDisk()->get($headerViewRendered),
                 'footer_html' => Pdf::getDisk()->get($footerViewRendered),
             ];
