@@ -9,9 +9,13 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Limenet\LaravelPdf\Adapters\AdapterInterface;
 use Limenet\LaravelPdf\Adapters\BrowserlessAdapter;
+use Limenet\LaravelPdf\Adapters\GotenbergAdapter;
+use Limenet\LaravelPdf\Adapters\MultiAdapter;
 use Limenet\LaravelPdf\Adapters\PuppeteerAdapter;
 use Limenet\LaravelPdf\Adapters\ScreenlyAdapter;
+use Limenet\LaravelPdf\Adapters\TailpdfAdapter;
 use Limenet\LaravelPdf\DTO\PdfConfig;
 use RuntimeException;
 use voku\helper\ASCII;
@@ -88,13 +92,21 @@ class Pdf
         return $this->generate() ?: throw new RuntimeException;
     }
 
+    public static function resolveAdapter(string $name): AdapterInterface
+    {
+        return match ($name) {
+            'browserless' => app(BrowserlessAdapter::class),
+            'screenly' => app(ScreenlyAdapter::class),
+            'tailpdf' => app(TailpdfAdapter::class),
+            'gotenberg' => app(GotenbergAdapter::class),
+            'multi' => app(MultiAdapter::class),
+            default => app(PuppeteerAdapter::class),
+        };
+    }
+
     private function generate(): string
     {
-        $strategy = match (config('pdf.strategy')) {
-            'browserless' => app(BrowserlessAdapter::class)->make(...),
-            'screenly' => app(ScreenlyAdapter::class)->make(...),
-            default => app(PuppeteerAdapter::class)->make(...),
-        };
+        $strategy = self::resolveAdapter(config('pdf.strategy'))->make(...);
 
         $generated = $this->isCached() && $this->getFile() !== null
             ? $this->getFile()

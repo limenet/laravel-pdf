@@ -52,14 +52,11 @@ class BrowserlessAdapter implements AdapterInterface, ConcurrencyLimiterInterfac
             $payload['url'] = URL::temporarySignedRoute('pdf', now()->addHour(), ['key' => $viewRendered]);
         }
 
-        $url = sprintf(
-            'https://%s.browserless.io/pdf?token=%s',
-            $this->adapterConfig('endpoint', 'chrome'),
-            $this->adapterConfig('token')
-        );
-
-        return $this->executeWithConcurrencyLimit(function () use ($payload, $url) {
-            $request = Http::post($url, $payload);
+        return $this->executeWithConcurrencyLimit(function () use ($payload) {
+            $request = Http::post(
+                sprintf('%spdf?token=%s', $this->baseUrl(), $this->adapterConfig('token')),
+                $payload
+            );
 
             if ($request->toException() !== null) {
                 $th = $request->toException();
@@ -69,5 +66,21 @@ class BrowserlessAdapter implements AdapterInterface, ConcurrencyLimiterInterfac
 
             return $request->body();
         });
+    }
+
+    public function isAlive(): bool
+    {
+        try {
+            $response = Http::timeout(3)->get($this->baseUrl());
+
+            return ! $response->serverError();
+        } catch (Exception) {
+            return false;
+        }
+    }
+
+    private function baseUrl(): string
+    {
+        return sprintf('https://%s.browserless.io/', $this->adapterConfig('endpoint', 'chrome'));
     }
 }

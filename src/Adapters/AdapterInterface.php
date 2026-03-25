@@ -13,6 +13,8 @@ interface AdapterInterface
         string $footerViewRendered,
     ): string;
 
+    public function isAlive(): bool;
+
     public function adapterConfig(string $path, mixed $default = null): mixed;
 
     public function configPath(): string;

@@ -76,4 +76,15 @@ class ScreenlyAdapter implements AdapterInterface, ConcurrencyLimiterInterface
             return Http::get($url)->body();
         });
     }
+
+    public function isAlive(): bool
+    {
+        try {
+            $response = Http::timeout(3)->get('https://3.screeenly.com/');
+
+            return ! $response->serverError();
+        } catch (Exception) {
+            return false;
+        }
+    }
 }

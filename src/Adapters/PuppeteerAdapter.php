@@ -77,4 +77,13 @@ class PuppeteerAdapter implements AdapterInterface, ConcurrencyLimiterInterface
             }
         });
     }
+
+    public function isAlive(): bool
+    {
+        $process = new Process(['node', '-e', "require('puppeteer')"]);
+        $process->setWorkingDirectory(base_path());
+        $process->run();
+
+        return $process->isSuccessful();
+    }
 }
