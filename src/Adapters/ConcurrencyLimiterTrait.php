@@ -21,7 +21,7 @@ trait ConcurrencyLimiterTrait
      */
     private function getConcurrencyKey(): string
     {
-        return strtolower(str_replace('\\', '_', get_class($this))).'_active_requests';
+        return strtolower(str_replace('\\', '_', $this::class)).'_active_requests';
     }
 
     /**
