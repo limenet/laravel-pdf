@@ -29,5 +29,5 @@ return [
         'adapters' => ['screenly', 'gotenberg'], // priority order, first available wins
         'liveness_ttl' => env('PDF_LIVENESS_TTL', 300), // seconds between liveness re-checks
     ],
-    'inline_assets' => false,
+    'inline_assets' => env('PDF_INLINE_ASSETS', false),
 ];
