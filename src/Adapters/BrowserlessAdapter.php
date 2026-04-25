@@ -44,7 +44,7 @@ class BrowserlessAdapter implements AdapterInterface, ConcurrencyLimiterInterfac
             // 'userAgent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
         ];
 
-        if (app()->environment('local')) {
+        if ($this->adapterConfig('use_html')) {
             $payload['html'] = Pdf::getDisk()->get($viewRendered);
             $payload['options']['headerTemplate'] = Pdf::getDisk()->get($headerViewRendered);
             $payload['options']['footerTemplate'] = Pdf::getDisk()->get($footerViewRendered);

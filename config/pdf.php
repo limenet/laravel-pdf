@@ -7,10 +7,12 @@ return [
         'token' => env('BROWSERLESS_TOKEN'),
         'endpoint' => 'production-ams', // see https://docs.browserless.io/overview/intro#global-endpoints
         'concurrency_limit' => env('BROWSERLESS_CONCURRENCY_LIMIT', 5), // Maximum number of concurrent requests
+        'use_html' => env('BROWSERLESS_USE_HTML', false),
     ],
     'screenly' => [
         'token' => env('SCREENLY_TOKEN'),
         'concurrency_limit' => env('SCREENLY_CONCURRENCY_LIMIT', 5), // Maximum number of concurrent requests
+        'use_html' => env('SCREENLY_USE_HTML', false),
     ],
     'tailpdf' => [
         'token' => env('TAILPDF_TOKEN'),

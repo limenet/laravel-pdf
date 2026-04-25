@@ -36,7 +36,7 @@ Choose a strategy:
     ```
 2. Browserless.io
 
-For local development, you may want to use the `browserless` strategy with `inline_assets` set to `true`.
+When the PDF adapter cannot reach your app via a signed URL (e.g. local development or isolated environments), set `use_html` to `true` in the adapter's config or via the corresponding env variable (`BROWSERLESS_USE_HTML`, `SCREENLY_USE_HTML`). This passes the rendered HTML directly to the API instead of a URL.
 
 ## Usage
 

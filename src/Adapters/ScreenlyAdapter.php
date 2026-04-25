@@ -51,7 +51,7 @@ class ScreenlyAdapter implements AdapterInterface, ConcurrencyLimiterInterface
                 'footer_html' => Pdf::getDisk()->get($footerViewRendered),
             ];
 
-        if (app()->environment('local')) {
+        if ($this->adapterConfig('use_html')) {
             $payload['html'] = Pdf::getDisk()->get($viewRendered);
         } else {
             $payload['url'] = URL::temporarySignedRoute('pdf', now()->addHour(), ['key' => $viewRendered]);
